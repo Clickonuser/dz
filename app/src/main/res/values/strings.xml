@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">dz</string>
+    <string name="contacts_title">Телефонная книга</string>
+    <string name="create_contact">Добавить контакт</string>
+    <string name="edit_contact">Редактирование контакта</string>
+    <string name="contact_title">Контакт</string>
+    <string name="back">Назад</string>
+    <string name="save">Сохранить</string>
+    <string name="open_contact">Открыть контакт</string>
+    <string name="edit">Редактировать</string>
+    <string name="contact_not_found">Контакт не найден</string>
+    <string name="name">Имя</string>
+    <string name="phone">Телефон</string>
+    <string name="address_optional">Адрес (необязательно)</string>
+    <string name="choose_icon">Выберите иконку</string>
+    <string name="avatar_description">Аватар контакта</string>
+    <string name="no_avatar">Без иконки</string>
+    <string name="icon_option">Иконка %1$d</string>
+    <string name="empty_contacts">Контактов пока нет</string>
+    <string name="save_error">Не удалось сохранить контакт. Попробуйте ещё раз.</string>
+</resources>
