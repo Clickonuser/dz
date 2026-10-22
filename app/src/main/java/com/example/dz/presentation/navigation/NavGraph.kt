@@ -5,9 +5,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.dz.presentation.screens.contacts.ContactsScreen
-import com.example.dz.presentation.screens.creation.CreateContactScreen
+import com.example.dz.presentation.screens.form.ContactFormScreen
 import com.example.dz.presentation.screens.details.ContactDetailsScreen
-import com.example.dz.presentation.screens.editing.EditContactScreen
 
 @Composable
 fun NavGraph() {
@@ -21,12 +20,12 @@ fun NavGraph() {
                     navController.navigate(ScreenNavigation.ContactDetails(id))
                 },
                 onAddClick = {
-                    navController.navigate(ScreenNavigation.CreateContact)
+                    navController.navigate(ScreenNavigation.ContactForm())
                 }
             )
         }
-        composable<ScreenNavigation.CreateContact> {
-            CreateContactScreen(
+        composable<ScreenNavigation.ContactForm> {
+            ContactFormScreen(
                 onBack = {
                     navController.popBackStack()
                 }
@@ -38,14 +37,7 @@ fun NavGraph() {
                     navController.popBackStack()
                 },
                 onEdit = { id ->
-                    navController.navigate(ScreenNavigation.EditContact(id))
-                }
-            )
-        }
-        composable<ScreenNavigation.EditContact> {
-            EditContactScreen(
-                onBack = {
-                    navController.popBackStack()
+                    navController.navigate(ScreenNavigation.ContactForm(id))
                 }
             )
         }
