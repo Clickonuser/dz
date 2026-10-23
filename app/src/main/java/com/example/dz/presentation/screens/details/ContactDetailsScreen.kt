@@ -45,8 +45,9 @@ fun ContactDetailsScreen(
             )
         },
         floatingActionButton = {
+            val contactId = viewModel.contactId
             if (contact != null) {
-                FloatingActionButton(onClick = { onEdit(viewModel.contactId) }, containerColor = AccentYellow) {
+                FloatingActionButton(onClick = { onEdit(contactId) }, containerColor = AccentYellow) {
                     Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit))
                 }
             }

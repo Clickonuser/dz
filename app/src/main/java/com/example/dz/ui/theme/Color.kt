@@ -11,5 +11,7 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 // Цвета отдельных элементов приложения
-val FieldBlue = Color(0xFFAAD9F6)
+val FieldBlue = Color(0xFF95CEFD)
 val AccentYellow = Color(0xFFFFE48C)
+val GreenAva = Color(0xFF79B674)
+val BackgroundAva = Color(0xD3ECF4FF)

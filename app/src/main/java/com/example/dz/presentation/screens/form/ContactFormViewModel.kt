@@ -73,6 +73,10 @@ class ContactFormViewModel @Inject constructor(
         if (ready) _form.update { it.copy(iconId = iconId) }
     }
 
+    fun consumeSaveError() {
+        saveError = false
+    }
+
     fun save(onSaved: () -> Unit) {
         if (!ready || saving) return
         val current = _form.value

@@ -24,6 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.dz.R
+import com.example.dz.ui.theme.GreenAva
+import com.example.dz.ui.theme.BackgroundAva
 
 val avatarOptions: List<ImageVector> = listOf(
     Icons.Default.Clear, // 0 — без иконки
@@ -38,7 +40,7 @@ val avatarOptions: List<ImageVector> = listOf(
 fun ContactAvatar(iconId: Int, size: Dp, modifier: Modifier = Modifier) {
     val icon = avatarOptions[iconId]
     Box(
-        modifier = modifier.size(size).background(Color(0xFFE8F3FA), CircleShape)
+        modifier = modifier.size(size).background(BackgroundAva, CircleShape)
             .border(1.dp, Color(0xFF8297A6), CircleShape),
         contentAlignment = Alignment.Center
     ) {
@@ -46,7 +48,7 @@ fun ContactAvatar(iconId: Int, size: Dp, modifier: Modifier = Modifier) {
             imageVector = icon,
             contentDescription = stringResource(R.string.avatar_description),
             modifier = Modifier.size(size * 0.7f),
-            tint = MaterialTheme.colorScheme.primary
+            tint = GreenAva
         )
     }
 }

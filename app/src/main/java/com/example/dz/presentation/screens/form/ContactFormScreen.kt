@@ -1,5 +1,6 @@
 package com.example.dz.presentation.screens.form
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -8,8 +9,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -26,6 +29,15 @@ fun ContactFormScreen(
     viewModel: ContactFormViewModel = hiltViewModel()
 ) {
     val form by viewModel.form.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val errorMessage = stringResource(R.string.save_error)
+
+    LaunchedEffect(viewModel.saveError) {
+        if (viewModel.saveError) {
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+            viewModel.consumeSaveError()
+        }
+    }
 
     Scaffold(
         modifier = modifier,
@@ -53,7 +65,9 @@ fun ContactFormScreen(
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(innerPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 96.dp)
         ) {
@@ -68,12 +82,6 @@ fun ContactFormScreen(
                 onIconChange = viewModel::changeIcon,
                 modifier = Modifier.fillMaxWidth()
             )
-            if (viewModel.saveError) {
-                Text(
-                    text = stringResource(R.string.save_error),
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
         }
     }
 }
