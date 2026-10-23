@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.SentimentSatisfied
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.example.dz.R
 
 val avatarOptions: List<ImageVector> = listOf(
+    Icons.Default.Clear, // 0 — без иконки
     Icons.Default.Person,
     Icons.Default.Face,
     Icons.Default.AccountCircle,
@@ -33,8 +35,8 @@ val avatarOptions: List<ImageVector> = listOf(
 )
 
 @Composable
-fun ContactAvatar(iconId: Int?, size: Dp, modifier: Modifier = Modifier) {
-    val icon = iconId?.let(avatarOptions::getOrNull) ?: Icons.Default.AccountCircle
+fun ContactAvatar(iconId: Int, size: Dp, modifier: Modifier = Modifier) {
+    val icon = avatarOptions[iconId]
     Box(
         modifier = modifier.size(size).background(Color(0xFFE8F3FA), CircleShape)
             .border(1.dp, Color(0xFF8297A6), CircleShape),

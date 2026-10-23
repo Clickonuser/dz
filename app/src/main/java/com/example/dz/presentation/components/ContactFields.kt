@@ -23,11 +23,11 @@ fun ContactFields(
     name: String,
     phone: String,
     address: String,
-    iconId: Int?,
+    iconId: Int,
     onNameChange: (String) -> Unit,
     onPhoneChange: (String) -> Unit,
     onAddressChange: (String) -> Unit,
-    onIconChange: (Int?) -> Unit,
+    onIconChange: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -39,7 +39,6 @@ fun ContactFields(
             modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            AvatarOption(null, iconId == null, onIconChange)
             avatarOptions.indices.forEach { index ->
                 AvatarOption(index, iconId == index, onIconChange)
             }
@@ -49,17 +48,19 @@ fun ContactFields(
 
 @Composable
 private fun AvatarOption(
-    iconId: Int?,
+    iconId: Int,
     selected: Boolean,
-    onSelect: (Int?) -> Unit,
+    onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var avatarModifier = modifier
+    if (selected) {
+        avatarModifier = avatarModifier.border(3.dp, Color(0xFF2E7CB8), CircleShape)
+    }
     ContactAvatar(
         iconId = iconId,
         size = 54.dp,
-        modifier = modifier
-            .then(if (selected) Modifier.border(3.dp, Color(0xFF2E7CB8), CircleShape) else Modifier)
-            .clickable { onSelect(iconId) }
+        modifier = avatarModifier.clickable { onSelect(iconId) }
     )
 }
 

@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.dz.data.ContactsDao
 import com.example.dz.data.ContactsDatabase
 import com.example.dz.data.ContactsRepositoryImpl
+import com.example.dz.data.migration1To2
 import com.example.dz.domain.ContactsRepository
 import dagger.Binds
 import dagger.Module
@@ -25,7 +26,9 @@ abstract class DataModule {
         @Provides
         @Singleton
         fun provideDatabase(@ApplicationContext context: Context): ContactsDatabase =
-            Room.databaseBuilder(context, ContactsDatabase::class.java, "contacts.db").build()
+            Room.databaseBuilder(context, ContactsDatabase::class.java, "contacts.db")
+                .addMigrations(migration1To2)
+                .build()
 
         @Provides
         fun provideContactsDao(database: ContactsDatabase): ContactsDao = database.contactsDao()

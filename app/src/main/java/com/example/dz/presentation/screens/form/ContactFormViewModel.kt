@@ -22,7 +22,7 @@ data class ContactForm(
     val name: String = "",
     val phone: String = "",
     val address: String = "",
-    val iconId: Int? = null
+    val iconId: Int = 0
 )
 
 @HiltViewModel
@@ -69,7 +69,7 @@ class ContactFormViewModel @Inject constructor(
         if (ready) _form.update { it.copy(address = address) }
     }
 
-    fun changeIcon(iconId: Int?) {
+    fun changeIcon(iconId: Int) {
         if (ready) _form.update { it.copy(iconId = iconId) }
     }
 
