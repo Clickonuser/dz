@@ -1,6 +1,5 @@
 package com.example.dz.presentation.screens.form
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,11 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.example.dz.R
 import com.example.dz.presentation.components.ContactFields
 import com.example.dz.ui.theme.AccentYellow
@@ -24,18 +23,14 @@ import com.example.dz.ui.theme.AccentYellow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactFormScreen(
-    onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    navController: NavHostController,
     viewModel: ContactFormViewModel = hiltViewModel()
 ) {
-    val form by viewModel.form.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-    val errorMessage = stringResource(R.string.save_error)
-
-    LaunchedEffect(viewModel.saveError) {
-        if (viewModel.saveError) {
-            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-            viewModel.consumeSaveError()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    LaunchedEffect(state.isSaved, navController) {
+        if (state.isSaved) {
+            navController.popBackStack()
         }
     }
 
@@ -45,11 +40,11 @@ fun ContactFormScreen(
             TopAppBar(
                 title = {
                     Text(stringResource(
-                        if (viewModel.contactId == null) R.string.create_contact else R.string.edit_contact
+                        if (!state.isEditing) R.string.create_contact else R.string.edit_contact
                     ))
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 }
@@ -57,7 +52,7 @@ fun ContactFormScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { viewModel.save(onSaved = onBack) },
+                onClick = { viewModel.onIntent(ContactFormIntent.Save) },
                 containerColor = AccentYellow
             ) {
                 Icon(Icons.Default.Check, contentDescription = stringResource(R.string.save))
@@ -71,15 +66,18 @@ fun ContactFormScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 96.dp)
         ) {
+            if (state.status == ContactFormStatus.Loading) {
+                LinearProgressIndicator(Modifier.fillMaxWidth())
+            }
             ContactFields(
-                name = form.name,
-                phone = form.phone,
-                address = form.address,
-                iconId = form.iconId,
-                onNameChange = viewModel::changeName,
-                onPhoneChange = viewModel::changePhone,
-                onAddressChange = viewModel::changeAddress,
-                onIconChange = viewModel::changeIcon,
+                name = state.name,
+                phone = state.phone,
+                address = state.address,
+                iconId = state.iconId,
+                onNameChange = { viewModel.onIntent(ContactFormIntent.NameChanged(it)) },
+                onPhoneChange = { viewModel.onIntent(ContactFormIntent.PhoneChanged(it)) },
+                onAddressChange = { viewModel.onIntent(ContactFormIntent.AddressChanged(it)) },
+                onIconChange = { viewModel.onIntent(ContactFormIntent.IconChanged(it)) },
                 modifier = Modifier.fillMaxWidth()
             )
         }

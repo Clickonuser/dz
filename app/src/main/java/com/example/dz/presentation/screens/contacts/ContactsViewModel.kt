@@ -5,10 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.dz.domain.Contact
 import com.example.dz.domain.GetAllContactsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 data class ContactsState(
@@ -18,13 +19,18 @@ data class ContactsState(
 
 @HiltViewModel
 class ContactsViewModel @Inject constructor(
-    getAllContacts: GetAllContactsUseCase
+    private val getAllContacts: GetAllContactsUseCase
 ) : ViewModel() {
-    val state: StateFlow<ContactsState> = getAllContacts()
-        .map { contacts -> ContactsState(contacts = contacts, isLoading = false) }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = ContactsState()
-        )
+    private val _state = MutableStateFlow(ContactsState())
+    val state = _state.asStateFlow()
+
+    init { subscribe() }
+
+    private fun subscribe() {
+        getAllContacts()
+            .onEach { contacts ->
+                _state.update { it.copy(contacts = contacts, isLoading = false) }
+            }
+            .launchIn(viewModelScope)
+    }
 }

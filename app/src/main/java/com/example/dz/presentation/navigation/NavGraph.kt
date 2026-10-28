@@ -14,32 +14,8 @@ fun NavGraph() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = ScreenNavigation.Contacts) {
-        composable<ScreenNavigation.Contacts> {
-            ContactsScreen(
-                onContactClick = { id ->
-                    navController.navigate(ScreenNavigation.ContactDetails(id))
-                },
-                onAddClick = {
-                    navController.navigate(ScreenNavigation.ContactForm())
-                }
-            )
-        }
-        composable<ScreenNavigation.ContactForm> {
-            ContactFormScreen(
-                onBack = {
-                    navController.popBackStack()
-                }
-            )
-        }
-        composable<ScreenNavigation.ContactDetails> {
-            ContactDetailsScreen(
-                onBack = {
-                    navController.popBackStack()
-                },
-                onEdit = { id ->
-                    navController.navigate(ScreenNavigation.ContactForm(id))
-                }
-            )
-        }
+        composable<ScreenNavigation.Contacts> { ContactsScreen(navController = navController) }
+        composable<ScreenNavigation.ContactForm> { ContactFormScreen(navController = navController) }
+        composable<ScreenNavigation.ContactDetails> { ContactDetailsScreen(navController = navController) }
     }
 }

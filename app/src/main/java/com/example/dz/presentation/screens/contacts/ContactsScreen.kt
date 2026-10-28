@@ -10,12 +10,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import com.example.dz.presentation.navigation.ScreenNavigation
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.dz.R
 import com.example.dz.domain.Contact
 import com.example.dz.ui.theme.AccentYellow
@@ -24,9 +26,8 @@ import com.example.dz.presentation.components.ContactAvatar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactsScreen(
-    onContactClick: (Int) -> Unit,
-    onAddClick: () -> Unit,
     modifier: Modifier = Modifier,
+    navController: NavHostController,
     viewModel: ContactsViewModel = hiltViewModel()
 ) {
 
@@ -43,7 +44,7 @@ fun ContactsScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onAddClick,
+                onClick = { navController.navigate(ScreenNavigation.ContactForm()) },
                 containerColor = AccentYellow
             ) {
                 Icon(
@@ -53,7 +54,13 @@ fun ContactsScreen(
             }
         }
     ) { innerPadding ->
-        if (state.contacts.isEmpty()) {
+        if (state.isLoading) {
+            Column(Modifier
+                .padding(innerPadding)
+                .padding(16.dp)) {
+                CircularProgressIndicator()
+            }
+        } else if (state.contacts.isEmpty()) {
             Box(
                 Modifier
                     .fillMaxSize()
@@ -75,7 +82,9 @@ fun ContactsScreen(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 items(state.contacts, key = { it.id }, contentType = { "contact" }) { contact ->
-                    ContactRow(contact = contact, onClick = { onContactClick(contact.id) })
+                    ContactRow(
+                        contact = contact,
+                        onClick = { navController.navigate(ScreenNavigation.ContactDetails(contact.id)) })
                 }
             }
         }

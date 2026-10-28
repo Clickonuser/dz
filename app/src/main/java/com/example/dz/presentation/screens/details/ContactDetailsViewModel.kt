@@ -8,10 +8,11 @@ import com.example.dz.domain.Contact
 import com.example.dz.domain.ObserveContactUseCase
 import com.example.dz.presentation.navigation.ScreenNavigation
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 data class ContactDetailsState(
@@ -22,15 +23,20 @@ data class ContactDetailsState(
 @HiltViewModel
 class ContactDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    observeContact: ObserveContactUseCase
+    private val observeContact: ObserveContactUseCase
 ) : ViewModel() {
     val contactId: Int = savedStateHandle.toRoute<ScreenNavigation.ContactDetails>().contactId
 
-    val state: StateFlow<ContactDetailsState> = observeContact(contactId)
-        .map { contact -> ContactDetailsState(contact = contact, isLoading = false) }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = ContactDetailsState()
-        )
+    private val _state = MutableStateFlow(ContactDetailsState())
+    val state = _state.asStateFlow()
+
+    init { subscribe() }
+
+    private fun subscribe() {
+        observeContact(contactId)
+            .onEach { contact ->
+                _state.update { it.copy(contact = contact, isLoading = false) }
+            }
+            .launchIn(viewModelScope)
+    }
 }

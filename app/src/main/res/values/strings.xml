@@ -18,4 +18,7 @@
     <string name="icon_option">Иконка %1$d</string>
     <string name="empty_contacts">Контактов пока нет</string>
     <string name="save_error">Не удалось сохранить контакт. Попробуйте ещё раз.</string>
+    <string name="required_contact_fields">Заполните имя и телефон</string>
+    <string name="load_contact_error">Не удалось загрузить контакты</string>
+    <string name="retry">Повторить</string>
 </resources>
